@@ -21,6 +21,7 @@ OBJS = \
   $K/bio.o \
   $K/fs.o \
   $K/log.o \
+  $K/custom_logger.o\
   $K/sleeplock.o \
   $K/file.o \
   $K/pipe.o \

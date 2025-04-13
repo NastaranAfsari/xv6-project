@@ -1,3 +1,4 @@
+#include "custom_logger.h"
 #include "types.h"
 #include "param.h"
 #include "memlayout.h"
@@ -29,6 +30,12 @@ main()
     fileinit();      // file table
     virtio_disk_init(); // emulated hard disk
     userinit();      // first user process
+
+     //Add log messages
+     log_message(INFO, "Welcome to AUT MCS Principles of Operating Systems Course. This message is from a custom logger implemented by 40212004 and 40213035");
+     log_message(WARN, "This is a test warning message for the custom logger");
+     log_message(ERROR, "This is a test error message for the custom logger");
+     
     __sync_synchronize();
     started = 1;
   } else {
