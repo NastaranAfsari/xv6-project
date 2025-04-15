@@ -150,7 +150,7 @@ runcmd(struct cmd *cmd)
 int
 getcmd(char *buf, int nbuf)
 {
-  write(2, "zahra-nastaran$ ", 16);
+  write(2, "xahra-nastaran$ ", 16);
   memset(buf, 0, nbuf);
   gets(buf, nbuf);
   if(buf[0] == 0) // EOF
