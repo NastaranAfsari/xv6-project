@@ -3,7 +3,6 @@
 #include "kernel/types.h"
 #include "user/user.h"
 #include "kernel/fcntl.h"
-//#include <string.h>  
 #include <stddef.h>  
 // Parsed command representation
 #define EXEC  1
@@ -87,30 +86,44 @@ runcmd(struct cmd *cmd)
   default:
     panic("runcmd");
 
+          
   case EXEC:
-   ecd = (struct execcd*) cmd;
-   if (ecd-›argv[0] == 0)
-   exit (1);
-   if (ecd→>argv[0][0] == '!' && ecd→>argv[0][1] == '\0') K
-   if (strien(ecd-›argv[1]) > 512) {
-   printf("Message too long\n");
-   } else {
-   char *message = ecd-›argv [1];
-   char *pos = strstr (message, "os");
-   if (pos != NULL) {
-   printf ("\033[34m%s\033[0m\n", message);
-   } else {
-   printf("%s\n", message);
-   break;
-   if (ecd→>argv[0] == 0)
-   exit (1);
-   exec (ecd-›argv[0], ecd-›argv);
-   fprintf(2, "exec %s failed\n", ecd-›argv[0]);
-   break;
-    
-    exec(ecmd->argv[0], ecmd->argv);
-    fprintf(2, "exec %s failed\n", ecmd->argv[0]);
-    break;
+     ecmd = (struct execcmd*)cmd;
+
+      if (ecmd->argv[0][0] == '!' && strcmp(ecmd->argv[0] + 1, "echo") == 0) {
+              char buf[513] = {0};
+              int total = 0;
+
+              for (int i = 1; ecmd->argv[i] != 0; i++) {
+                  int len = strlen(ecmd->argv[i]);
+                  if (total + len + 1 >= sizeof(buf)) {
+                      printf("Message too long\n");
+                      exit(1);
+                  }
+                  if (i > 1) {
+                      buf[total++] = ' ';
+                  }
+                  strcpy(buf + total, ecmd->argv[i]);
+                  total += len;
+              }
+
+              if (total == 0) {
+                  printf("No message provided.\n");
+                  exit(1);
+              } else if (strstr(buf, "os") != NULL) {
+                        printf("\033[34m%s\033[0m\n", buf);
+              } else {
+                  printf("%s\n", buf);
+              }
+              break;
+          }
+            if (ecmd->argv[0] == 0)
+              exit(1);
+         
+          exec(ecmd->argv[0], ecmd->argv);
+          fprintf(2, "exec %s failed\n", ecmd->argv[0]);
+          break;
+
           
   case REDIR:
     rcmd = (struct redircmd*)cmd;
