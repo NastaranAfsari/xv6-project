@@ -87,42 +87,40 @@ runcmd(struct cmd *cmd)
     panic("runcmd");
 
           
-  case EXEC:
-     ecmd = (struct execcmd*)cmd;
+      case EXEC:
+        ecmd = (struct execcmd*)cmd;
 
-      if (ecmd->argv[0][0] == '!' && strcmp(ecmd->argv[0] + 1, "echo") == 0) {
-              char buf[513] = {0};
-              int total = 0;
+        if (ecmd->argv[0] == 0)
+          exit(1);
 
-              for (int i = 1; ecmd->argv[i] != 0; i++) {
-                  int len = strlen(ecmd->argv[i]);
-                  if (total + len + 1 >= sizeof(buf)) {
-                      printf("Message too long\n");
-                      exit(1);
-                  }
-                  if (i > 1) {
-                      buf[total++] = ' ';
-                  }
-                  strcpy(buf + total, ecmd->argv[i]);
-                  total += len;
-              }
+       
+        if (strcmp(ecmd->argv[0], "!") == 0) {
+          char msg[128] = {0};
 
-              if (total == 0) {
-                  printf("No message provided.\n");
-                  exit(1);
-              } else if (strstr(buf, "os") != NULL) {
-                        printf("\033[34m%s\033[0m\n", buf);
-              } else {
-                  printf("%s\n", buf);
-              }
-              break;
+          for (int i = 1; ecmd->argv[i] != 0; i++) {
+            strcat(msg, ecmd->argv[i]);
+            if (ecmd->argv[i+1] != 0)
+              strcat(msg, " ");
           }
-            if (ecmd->argv[0] == 0)
-              exit(1);
-         
-          exec(ecmd->argv[0], ecmd->argv);
-          fprintf(2, "exec %s failed\n", ecmd->argv[0]);
-          break;
+
+        
+          if (strstr(msg, "os") != 0) {
+            printf("os\n");
+          }
+
+
+          if (strlen(msg) > 15) {
+            printf("Message too long\n");
+          } else {
+            printf("%s\n", msg);
+          }
+
+          exit(0);
+        }
+
+        exec(ecmd->argv[0], ecmd->argv);
+        fprintf(2, "exec %s failed\n", ecmd->argv[0]);
+        break;
 
           
   case REDIR:
