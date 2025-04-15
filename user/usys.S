@@ -105,3 +105,8 @@ uptime:
  li a7, SYS_uptime
  ecall
  ret
+.global trigger
+trigger:
+ li a7, SYS_trigger
+ ecall
+ ret

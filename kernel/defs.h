@@ -189,5 +189,8 @@ void            virtio_disk_intr(void);
 //custom_logger.c
 void log_message(enum log_level, const char*);
 
+//sys_trigger
+uint64          sys_trigger(void);
+
 // number of elements in fixed-size array
 #define NELEM(x) (sizeof(x)/sizeof((x)[0]))
