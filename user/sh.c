@@ -111,6 +111,7 @@ runcmd(struct cmd *cmd)
             printf("No message provided\n");
             exit(0);
           }
+            
         for (int i = 1; ecmd->argv[i] != 0; i++) {
           if (strlen(msg) + strlen(ecmd->argv[i]) + 1 > 512) {
               printf("Message too long\n");
@@ -121,9 +122,19 @@ runcmd(struct cmd *cmd)
             if (ecmd->argv[i+1] != 0)
               strcat(msg, " ");
           }
-          if (strstr(msg, "os") != 0) {
-            printf("\033[34m%s\033[0m\n", msg);
-          }
+            
+            char *c = strstr(msg,"os");
+        if ( c != 0 )
+        {
+            for ( char *pointer = msg ; pointer < c ; pointer++ )
+            {
+                printf("%c",*p);
+            }
+            printf("\033[34m%s\033[0m" , "os");
+
+                
+            printf("%s\n", pos + 2);
+        }
           else {
             printf("%s\n", msg);
           }
