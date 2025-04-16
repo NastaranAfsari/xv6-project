@@ -106,38 +106,34 @@ runcmd(struct cmd *cmd)
 
         if (strcmp(ecmd->argv[0], "!") == 0) {
           char msg[513] = {0};
-
+        
         if (ecmd->argv[1] == 0) {
             printf("No message provided\n");
             exit(0);
           }
             
         for (int i = 1; ecmd->argv[i] != 0; i++) {
+          // f the string length exceeds 512, the message "Message too long" is printed.
           if (strlen(msg) + strlen(ecmd->argv[i]) + 1 > 512) {
               printf("Message too long\n");
               exit(0);
             }
-
+        
             strcat(msg, ecmd->argv[i]);
             if (ecmd->argv[i+1] != 0)
               strcat(msg, " ");
           }
-            
-            char *c = strstr(msg,"os");
-        if ( c != 0 )
-        {
-            for ( char *pointer = msg ; pointer < c ; pointer++ )
-            {
-                printf("%c",*p);
-            }
+        //To identify the substring "os", the characters are printed one by one.
+        for (int i = 0; msg[i] != '\0'; ) {
+            if (msg[i] == 'o' && msg[i+1] == 's') {
             printf("\033[34m%s\033[0m" , "os");
-
-                
-            printf("%s\n", pos + 2);
-        }
-          else {
-            printf("%s\n", msg);
-          }
+                i += 2;
+              } else {
+                printf("%c", msg[i]);
+                i++;
+              }
+            }
+            printf("\n");
 
           exit(0);
         }
