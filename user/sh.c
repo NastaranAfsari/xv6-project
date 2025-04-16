@@ -55,18 +55,29 @@ struct cmd *parsecmd(char*);
 void runcmd(struct cmd*) __attribute__((noreturn));
 
 char* strstr(const char* haystack, const char* needle) {
-    if (!*needle) return (char*) haystack;
-    for (; *haystack; ++haystack) {
-        if (*haystack == *needle) {
-            const char *h = haystack, *n = needle;
-            while (*h && *n && *h == *n) {
-                ++h; ++n;
-            }
-            if (!*n) return (char*) haystack;
-        }
+  if (!*needle) return (char*)haystack;
+
+  for (; *haystack; haystack++) {
+    const char *h = haystack, *n = needle;
+    while (*h && *n && *h == *n) {
+      h++;
+      n++;
     }
-    return NULL;
+    if (!*n) return (char*)haystack;
+  }
+
+  return 0;
 }
+
+char *strcat(char *dest, const char *src) {
+  char *ptr = dest + strlen(dest);
+  while (*src != '\0') {
+    *ptr++ = *src++;
+  }
+  *ptr = '\0';
+  return dest;
+}
+
 
 // Execute cmd.  Never returns.
 void
@@ -85,7 +96,6 @@ runcmd(struct cmd *cmd)
   switch(cmd->type){
   default:
     panic("runcmd");
-
           
       case EXEC:
         ecmd = (struct execcmd*)cmd;
@@ -93,25 +103,28 @@ runcmd(struct cmd *cmd)
         if (ecmd->argv[0] == 0)
           exit(1);
 
-       
-        if (strcmp(ecmd->argv[0], "!") == 0) {
-          char msg[128] = {0};
 
-          for (int i = 1; ecmd->argv[i] != 0; i++) {
+        if (strcmp(ecmd->argv[0], "!") == 0) {
+          char msg[513] = {0};
+
+        if (ecmd->argv[1] == 0) {
+            printf("No message provided\n");
+            exit(0);
+          }
+        for (int i = 1; ecmd->argv[i] != 0; i++) {
+          if (strlen(msg) + strlen(ecmd->argv[i]) + 1 > 512) {
+              printf("Message too long\n");
+              exit(0);
+            }
+
             strcat(msg, ecmd->argv[i]);
             if (ecmd->argv[i+1] != 0)
               strcat(msg, " ");
           }
-
-        
           if (strstr(msg, "os") != 0) {
-            printf("os\n");
+            printf("\033[34m%s\033[0m\n", msg);
           }
-
-
-          if (strlen(msg) > 15) {
-            printf("Message too long\n");
-          } else {
+          else {
             printf("%s\n", msg);
           }
 
@@ -122,7 +135,6 @@ runcmd(struct cmd *cmd)
         fprintf(2, "exec %s failed\n", ecmd->argv[0]);
         break;
 
-          
   case REDIR:
     rcmd = (struct redircmd*)cmd;
     close(rcmd->fd);
