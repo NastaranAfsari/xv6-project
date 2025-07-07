@@ -81,6 +81,23 @@ struct trapframe {
 
 enum procstate { UNUSED, USED, SLEEPING, RUNNABLE, RUNNING, ZOMBIE };
 
+enum threadstate {
+    THREAD_UNUSED,    // Thread slot is free
+    THREAD_RUNNABLE,  // Thread is ready to run
+    THREAD_RUNNING,   // Thread is currently running
+    THREAD_JOINED,    // Thread is waiting for another thread to finish
+    THREAD_SLEEPING   // Thread is sleeping
+};
+
+struct thread {
+    enum threadstate state;        // State of the thread
+    struct trapframe *trapframe;   // For context switching
+    uint id;                       // Unique thread ID
+    uint join;                     // For thread synchronization (join)
+    int sleep_n;                   // For sleep duration
+    uint sleep_tick0;              // For sleep timing
+};
+
 // Per-process state
 struct proc {
   struct spinlock lock;
@@ -104,4 +121,6 @@ struct proc {
   struct file *ofile[NOFILE];  // Open files
   struct inode *cwd;           // Current directory
   char name[16];               // Process name (debugging)
+  struct thread threads[NTHREAD];     // Array of threads
+  struct thread *current_thread;      // Pointer to the currently running thread
 };
