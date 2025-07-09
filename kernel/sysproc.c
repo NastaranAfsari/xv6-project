@@ -33,6 +33,23 @@ sys_trigger(void)
     printf("INFO − This is a log to test a new xv6 system call\n");
     return 0;
 }
+uint64
+sys_thread(void) {
+    uint64 start_thread, stack_address, arg;
+    argaddr(0, &start_thread);
+    argaddr(1, &stack_address);
+    argaddr(2, &arg);
+    struct thread *t = allocthread(startಸstart_thread, stack_address, arg);
+    return t ? t->id : 0;
+}
+
+uint64
+sys_jointhread(void) {
+    int id;
+    argint(0, &id);
+    return jointhread(id);
+}
+
 
 uint64
 sys_wait(void)
