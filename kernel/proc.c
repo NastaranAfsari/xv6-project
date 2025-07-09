@@ -55,9 +55,9 @@ procinit(void)
       initlock(&p->lock, "proc");
       p->state = UNUSED;
       p->kstack = KSTACK((int) (p - proc));
+      p->current_thread = 0; // Initialize current_thread to indicate no active thread
   }
 }
-
 // Must be called with interrupts disabled,
 // to prevent race with process being moved
 // to a different CPU.
@@ -326,6 +326,12 @@ freeproc(struct proc *p)
   p->killed = 0;
   p->xstate = 0;
   p->state = UNUSED;
+
+  // Free all threads associated with the process
+  for (int i = 0; i < NTHREAD; ++i) {
+      freethread(&p->threads[i]);
+  }
+  p->current_thread = 0; // Reset current_thread to null
 }
 
 // Create a user page table for a given process, with no user memory,
@@ -618,14 +624,16 @@ scheduler(void)
         // Switch to chosen process.  It is the process's job
         // to release its lock and then reacquire it
         // before jumping back to us.
-        p->state = RUNNING;
-        c->proc = p;
-        swtch(&c->context, &p->context);
+        if (thread_schd(p)) {
+            p->state = RUNNING;
+            c->proc = p;
+            swtch(&c->context, &p->context);
 
-        // Process is done running for now.
-        // It should have changed its p->state before coming back.
-        c->proc = 0;
-        found = 1;
+            // Process is done running for now.
+            // It should have changed its p->state before coming back.
+            c->proc = 0;
+            found = 1;
+        }
       }
       release(&p->lock);
     }
@@ -636,7 +644,6 @@ scheduler(void)
     }
   }
 }
-
 // Switch to scheduler.  Must hold only p->lock
 // and have changed proc->state. Saves and restores
 // intena because intena is a property of this
