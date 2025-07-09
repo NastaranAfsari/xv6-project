@@ -9,6 +9,13 @@ struct spinlock;
 struct sleeplock;
 struct stat;
 struct superblock;
+struct thread;
+
+void exitthread();
+void freethread(struct thread *t);
+struct thread* allocthread(uint64 start_thread, uint64 stack_address, uint64 arg);
+int jointhread(uint id);
+void sleepthread(int n, uint ticks0);
 
 // bio.c
 void            binit(void);
