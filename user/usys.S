@@ -110,3 +110,13 @@ trigger:
  li a7, SYS_trigger
  ecall
  ret
+.global thread
+thread:
+ li a7, SYS_thread
+ ecall
+ ret
+.global jointhread
+jointhread:
+ li a7, SYS_jointhread
+ ecall
+ ret

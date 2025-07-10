@@ -39,7 +39,7 @@ sys_thread(void) {
     argaddr(0, &start_thread);
     argaddr(1, &stack_address);
     argaddr(2, &arg);
-    struct thread *t = allocthread(startಸstart_thread, stack_address, arg);
+    struct thread *t = allocthread(start_thread, stack_address, arg);
     return t ? t->id : 0;
 }
 
