@@ -14,8 +14,11 @@ struct thread;
 void exitthread();
 void freethread(struct thread *t);
 struct thread* allocthread(uint64 start_thread, uint64 stack_address, uint64 arg);
+struct thread *initthread(struct proc *p);
 int jointhread(uint id);
 void sleepthread(int n, uint ticks0);
+int allocpid(void);
+int thread_schd(struct proc *p);
 
 // bio.c
 void            binit(void);
