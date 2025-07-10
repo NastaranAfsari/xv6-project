@@ -83,6 +83,12 @@ sys_sleep(void)
     n = 0;
   acquire(&tickslock);
   ticks0 = ticks;
+  if (myproc()->current_thread) {
+      release(&tickslock);
+      sleepthread(n, ticks0);
+      return 0;
+  }
+
   while(ticks - ticks0 < n){
     if(killed(myproc())){
       release(&tickslock);
@@ -93,6 +99,7 @@ sys_sleep(void)
   release(&tickslock);
   return 0;
 }
+
 
 uint64
 sys_kill(void)
