@@ -120,3 +120,8 @@ jointhread:
  li a7, SYS_jointhread
  ecall
  ret
+.global yield
+yield:
+ li a7, SYS_yield
+ ecall
+ ret
