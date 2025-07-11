@@ -104,6 +104,8 @@ extern uint64 sys_close(void);
 extern uint64 sys_trigger(void);
 extern uint64 sys_thread(void);
 extern uint64 sys_jointhread(void);
+extern uint64 sys_yield(void);
+
 
 // An array mapping syscall numbers from syscall.h
 // to the function that handles the system call.
@@ -132,6 +134,8 @@ static uint64 (*syscalls[])(void) = {
 [SYS_trigger] sys_trigger,
 [SYS_thread]      sys_thread,
 [SYS_jointhread]  sys_jointhread,
+[SYS_yield] sys_yield,
+
 };
 
 void
