@@ -50,6 +50,12 @@ sys_jointhread(void) {
     return jointhread(id);
 }
 
+uint64
+sys_yield(void) {
+    yield();
+    return 0;
+}
+
 
 uint64
 sys_wait(void)
