@@ -85,8 +85,8 @@ void *my_thread(void *arg) {
         // Release lock after printing
         
         // Try to yield by calling a system call that trigger scheduling
-        sleep(0);  // Sleep for 0 ticks - this should trigger thread scheduling
-  6e:	4501                	li	a0,0
+        sleep(1);  // Sleep for 0 ticks - this should trigger thread scheduling
+  6e:	4505                	li	a0,1
   70:	3fc000ef          	jal	46c <sleep>
     for (int i = 0; i < 10; ++i) {
   74:	397d                	addiw	s2,s2,-1
